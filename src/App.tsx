@@ -4,6 +4,7 @@ import { ThemeProvider, createTheme, CssBaseline, Box } from '@mui/material';
 import { CartProvider } from './contexts/CartContext';
 import { WishlistProvider } from './contexts/WishlistContext';
 import { AuthProvider } from './contexts/AuthContext';
+import { SupabaseAuthProvider } from './contexts/SupabaseAuthContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
@@ -48,38 +49,40 @@ const App: React.FC = () => {
     <ThemeProvider theme={muiTheme}>
       <CssBaseline />
       <BrowserRouter>
-        <AuthProvider>
-          <CartProvider>
-            <WishlistProvider>
-              <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-                <Navbar />
-                <Box component="main" sx={{ flexGrow: 1 }}>
-                  <Routes>
-                    <Route path="/" element={<HomePage />} />
-                    <Route path="/login" element={<LoginPage />} />
-                    <Route path="/register" element={<RegisterPage />} />
-                    <Route path="/profile" element={<ProfilePage />} />
-                    <Route path="/nilas-treats" element={<NilasTreatsPage />} />
-                  <Route path="/cakes" element={<CakeVarietiesPage />} />
-                  <Route path="/cakes/:category" element={<CategoryPage />} />
-                  <Route path="/wishlist" element={<WishlistPage />} />
-                  <Route path="/cart" element={<CartPage />} />
-                  <Route path="/customize" element={<CustomizePage />} />
-                  <Route path="/offers" element={<OffersPage />} />
-                  <Route path="/feedback" element={<FeedbackPage />} />
-                  <Route path="/checkout" element={<CheckoutPage />} />
-                  <Route path="/payment" element={<PaymentPage />} />
-                  <Route path="/admin" element={<AdminPage />} />
-                  <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
-                  <Route path="/terms-conditions" element={<TermsConditionsPage />} />
-                  <Route path="/contact" element={<ContactUsPage />} />
-                </Routes>
+        <SupabaseAuthProvider>
+          <AuthProvider>
+            <CartProvider>
+              <WishlistProvider>
+                <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+                  <Navbar />
+                  <Box component="main" sx={{ flexGrow: 1 }}>
+                    <Routes>
+                      <Route path="/" element={<HomePage />} />
+                      <Route path="/login" element={<LoginPage />} />
+                      <Route path="/register" element={<RegisterPage />} />
+                      <Route path="/profile" element={<ProfilePage />} />
+                      <Route path="/nilas-treats" element={<NilasTreatsPage />} />
+                    <Route path="/cakes" element={<CakeVarietiesPage />} />
+                    <Route path="/cakes/:category" element={<CategoryPage />} />
+                    <Route path="/wishlist" element={<WishlistPage />} />
+                    <Route path="/cart" element={<CartPage />} />
+                    <Route path="/customize" element={<CustomizePage />} />
+                    <Route path="/offers" element={<OffersPage />} />
+                    <Route path="/feedback" element={<FeedbackPage />} />
+                    <Route path="/checkout" element={<CheckoutPage />} />
+                    <Route path="/payment" element={<PaymentPage />} />
+                    <Route path="/admin" element={<AdminPage />} />
+                    <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+                    <Route path="/terms-conditions" element={<TermsConditionsPage />} />
+                    <Route path="/contact" element={<ContactUsPage />} />
+                  </Routes>
+                </Box>
+                <Footer />
               </Box>
-              <Footer />
-            </Box>
-          </WishlistProvider>
-        </CartProvider>
-        </AuthProvider>
+            </WishlistProvider>
+          </CartProvider>
+          </AuthProvider>
+        </SupabaseAuthProvider>
       </BrowserRouter>
     </ThemeProvider>
   );

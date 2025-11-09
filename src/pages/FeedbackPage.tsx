@@ -9,21 +9,49 @@ import {
   CardContent,
   Rating,
   Grid,
+  Alert,
 } from '@mui/material';
 import { theme } from '../constants';
+import { sendFeedbackToTelegram } from '../lib/telegramService';
 
 const FeedbackPage: React.FC = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    phone: '',
     rating: 0,
     comments: '',
   });
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
-  const handleSubmit = () => {
-    alert('Thank you for your feedback!');
-    console.log('Feedback:', formData);
-    setFormData({ name: '', email: '', rating: 0, comments: '' });
+  const handleSubmit = async () => {
+    if (!formData.name || !formData.email || !formData.phone || !formData.comments) {
+      setMessage({ type: 'error', text: 'Please fill in all fields' });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const result = await sendFeedbackToTelegram({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        message: formData.comments,
+        rating: formData.rating,
+      });
+
+      if (result.success) {
+        setMessage({ type: 'success', text: 'Thank you for your feedback! We will review it shortly.' });
+        setFormData({ name: '', email: '', phone: '', rating: 0, comments: '' });
+      } else {
+        setMessage({ type: 'error', text: result.error || 'Failed to submit feedback' });
+      }
+    } catch (error) {
+      setMessage({ type: 'error', text: 'An error occurred while submitting feedback' });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -34,6 +62,11 @@ const FeedbackPage: React.FC = () => {
         </Typography>
         <Card>
           <CardContent sx={{ p: 4 }}>
+            {message && (
+              <Alert severity={message.type} sx={{ mb: 3 }}>
+                {message.text}
+              </Alert>
+            )}
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <TextField
@@ -50,6 +83,14 @@ const FeedbackPage: React.FC = () => {
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Phone"
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -79,9 +120,10 @@ const FeedbackPage: React.FC = () => {
                   fullWidth
                   size="large"
                   onClick={handleSubmit}
+                  disabled={loading}
                   sx={{ backgroundColor: theme.primaryColor, color: theme.secondaryColor }}
                 >
-                  Submit Feedback
+                  {loading ? 'Submitting...' : 'Submit Feedback'}
                 </Button>
               </Grid>
             </Grid>

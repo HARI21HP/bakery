@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, ReactNode } from 'react';
+import { useSupabaseAuth } from './SupabaseAuthContext';
 
 interface User {
   id: string;
@@ -8,37 +9,20 @@ interface User {
 
 interface AuthContextType {
   user: User | null;
-  login: (email: string, password: string) => boolean;
-  logout: () => void;
+  login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  logout: () => Promise<void>;
+  signup: (email: string, password: string, name: string) => Promise<{ success: boolean; error?: string }>;
   isAuthenticated: boolean;
+  isLoading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
-
-  const login = (email: string, password: string): boolean => {
-    // Demo login - accept any credentials
-    if (email && password) {
-      setUser({
-        id: '1',
-        name: email.split('@')[0],
-        email: email,
-      });
-      return true;
-    }
-    return false;
-  };
-
-  const logout = () => {
-    setUser(null);
-  };
-
-  const isAuthenticated = user !== null;
+  const supabaseAuth = useSupabaseAuth();
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, isAuthenticated }}>
+    <AuthContext.Provider value={supabaseAuth}>
       {children}
     </AuthContext.Provider>
   );

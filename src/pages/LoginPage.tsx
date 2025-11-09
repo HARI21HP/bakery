@@ -20,7 +20,7 @@ import { theme } from '../constants';
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login } = useAuth();
+  const { login, isLoading } = useAuth();
   
   const [formData, setFormData] = useState({
     email: '',
@@ -30,7 +30,7 @@ const LoginPage: React.FC = () => {
 
   const from = (location.state as any)?.from?.pathname || '/';
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
@@ -39,11 +39,11 @@ const LoginPage: React.FC = () => {
       return;
     }
 
-    const success = login(formData.email, formData.password);
+    const { success, error: authError } = await login(formData.email, formData.password);
     if (success) {
       navigate(from, { replace: true });
     } else {
-      setError('Invalid credentials');
+      setError(authError || 'Invalid credentials');
     }
   };
 
@@ -129,13 +129,14 @@ const LoginPage: React.FC = () => {
                     variant="contained"
                     fullWidth
                     size="large"
+                    disabled={isLoading}
                     sx={{
                       backgroundColor: theme.primaryColor,
                       color: theme.secondaryColor,
                       '&:hover': { backgroundColor: '#ff9db3' },
                     }}
                   >
-                    Sign In
+                    {isLoading ? 'Signing In...' : 'Sign In'}
                   </Button>
                 </Grid>
               </Grid>
@@ -173,7 +174,7 @@ const LoginPage: React.FC = () => {
 
             <Alert severity="info" sx={{ mt: 3 }}>
               <Typography variant="body2">
-                <strong>Demo:</strong> Enter any email and password to login
+                <strong>Supabase Auth Enabled:</strong> Configure Supabase credentials in .env.local to use real authentication
               </Typography>
             </Alert>
           </CardContent>

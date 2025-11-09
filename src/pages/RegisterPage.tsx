@@ -18,7 +18,7 @@ import { theme } from '../constants';
 
 const RegisterPage: React.FC = () => {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { signup, isLoading } = useAuth();
   
   const [formData, setFormData] = useState({
     name: '',
@@ -28,7 +28,7 @@ const RegisterPage: React.FC = () => {
   });
   const [error, setError] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
@@ -42,9 +42,14 @@ const RegisterPage: React.FC = () => {
       return;
     }
 
-    // Auto-login after registration (demo)
-    login(formData.email, formData.password);
-    navigate('/');
+    const { success, error: authError } = await signup(formData.email, formData.password, formData.name);
+    if (success) {
+      navigate('/login', { 
+        state: { message: 'Account created! Please check your email to confirm your account.' }
+      });
+    } else {
+      setError(authError || 'Signup failed');
+    }
   };
 
   return (
@@ -150,13 +155,14 @@ const RegisterPage: React.FC = () => {
                     variant="contained"
                     fullWidth
                     size="large"
+                    disabled={isLoading}
                     sx={{
                       backgroundColor: theme.primaryColor,
                       color: theme.secondaryColor,
                       '&:hover': { backgroundColor: '#ff9db3' },
                     }}
                   >
-                    Create Account
+                    {isLoading ? 'Creating Account...' : 'Create Account'}
                   </Button>
                 </Grid>
               </Grid>
@@ -178,7 +184,7 @@ const RegisterPage: React.FC = () => {
 
             <Alert severity="info" sx={{ mt: 3 }}>
               <Typography variant="body2">
-                <strong>Demo:</strong> All fields are validated for demo purposes
+                <strong>Supabase Auth Enabled:</strong> Configure Supabase credentials in .env.local to use real authentication
               </Typography>
             </Alert>
           </CardContent>

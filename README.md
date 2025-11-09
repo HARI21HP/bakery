@@ -26,11 +26,38 @@ A modern online pastry shop web app featuring home-baked treats, customizable ca
 
 ## Getting Started
 
+### Prerequisites
+
+- Node.js 16+ 
+- npm or yarn
+- Supabase account (for authentication)
+- Telegram bot (optional, for notifications)
+
 ### Installation
 
 ```bash
+# Install dependencies
 npm install
 ```
+
+### Environment Setup
+
+1. Copy the example environment file:
+```bash
+cp .env.example .env.local
+```
+
+2. Fill in your credentials in `.env.local`:
+```env
+REACT_APP_SUPABASE_URL=your-supabase-url
+REACT_APP_SUPABASE_ANON_KEY=your-anon-key
+REACT_APP_TELEGRAM_BOT_TOKEN=your-bot-token
+REACT_APP_TELEGRAM_CHAT_ID=your-chat-id
+```
+
+**For detailed setup instructions:**
+- 🔐 [Supabase Auth Setup](./TELEGRAM_SETUP.md#1-create-a-telegram-bot-if-you-havent-already)
+- 💬 [Telegram Notifications Setup](./TELEGRAM_SETUP.md)
 
 ### Run Development Server
 
@@ -45,6 +72,10 @@ The app will open at [http://localhost:3000](http://localhost:3000)
 ```bash
 npm run build
 ```
+
+This creates an optimized production build in the `build/` folder.
+
+**For deployment instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md)**
 
 ## Project Structure
 
@@ -85,6 +116,28 @@ src/
 - Secondary Color: `#6d6875` (Dark Gray)
 - Background: `#fff8f8` (Light Rose)
 - Font: Poppins
+
+## Authentication & Real-time Features
+
+### Supabase Authentication
+- Secure email/password authentication
+- Session persistence
+- User profile management
+- Ready for production deployment
+
+### Telegram Notifications
+The app sends real-time notifications to Telegram for:
+- **📝 Customer Feedback** - With ratings and messages
+- **📦 New Orders** - Full order details with items and prices
+- **🎂 Customization Requests** - Detailed cake specifications
+
+See [TELEGRAM_SETUP.md](./TELEGRAM_SETUP.md) for configuration.
+
+## Documentation
+
+- 📖 [DEPLOYMENT.md](./DEPLOYMENT.md) - Deploy to Vercel, Netlify, or Docker
+- 💬 [TELEGRAM_SETUP.md](./TELEGRAM_SETUP.md) - Telegram bot configuration
+- 🔒 [Supabase Docs](https://supabase.com/docs) - Authentication setup
 
 ## License
 
