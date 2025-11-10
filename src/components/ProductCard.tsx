@@ -7,7 +7,6 @@ import {
   Typography,
   Button,
   IconButton,
-  Box,
 } from '@mui/material';
 import { ShoppingCart, Favorite, FavoriteBorder } from '@mui/icons-material';
 import { Product } from '../constants';
